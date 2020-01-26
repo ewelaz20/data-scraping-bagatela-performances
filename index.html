@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <title>Teatr</title>
+</head>
+
+
+<body>
+
+<style>
+    th, td, p, input {
+        font:14px Verdana;
+    }
+    table, th, td
+    {
+        border: solid 1px #DDD;
+        border-collapse: collapse;
+        padding: 2px 3px;
+        text-align: center;
+    }
+    th {
+        font-weight:bold;
+    }
+</style>
+<p>Enter the day when you want go to the theatre this month</p>
+
+Day:
+<input type="text" id="myText">
+
+
+<button type="button" onclick="myFunction()">Submit </button>
+
+
+<p id="showData"></p>
+
+<script>
+
+
+    function myFunction() {
+        var date = document.getElementById("myText").value;
+
+        url = 'http://localhost:4567/spektakle/' + date
+        fetch(url)
+            .then((response) => {
+            return response.json();
+        })
+        .then((myJson) =>{
+            console.log(myJson)
+
+        var col = [];
+        for (var i = 0; i < myJson.length; i++) {
+            for (var key in myJson[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+
+        // CREATE DYNAMIC TABLE.
+        var table = document.createElement("table");
+
+        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+        var tr = table.insertRow(-1);                   // TABLE ROW.
+
+        for (var i = 0; i < col.length; i++) {
+            var th = document.createElement("th");      // TABLE HEADER.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        // ADD JSON DATA TO THE TABLE AS ROWS.
+        for (var i = 0; i < myJson.length; i++) {
+
+            tr = table.insertRow(-1);
+
+            for (var j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = myJson[i][col[j]];
+            }
+        }
+
+        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+        var divContainer = document.getElementById("showData");
+        divContainer.innerHTML = "";
+        divContainer.appendChild(table);
+
+
+
+    });
+    }
+
+
+</script>
+
+
+</body>
+</html>
